@@ -1,1 +1,1 @@
-export { default } from './NameEditorFormik'
+export { default } from './NameEditor';

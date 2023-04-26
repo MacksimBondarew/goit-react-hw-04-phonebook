@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import {
     ContactForm,
     NameInput,
@@ -8,70 +8,76 @@ import {
     LabelPhone,
 } from './NameEditor.styled';
 import PropTypes from 'prop-types';
-class NameEditor extends Component {
-    state = {
-        name: '',
-        number: '',
-    };
 
-    handleChange = e => {
+const NameEditor = ({ onSubmit, people }) => {
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
+
+    function handleChange(e) {
         const { name, value } = e.currentTarget;
-        this.setState({ [name]: value });
-    };
+        switch (name) {
+            case 'name':
+                setName(value);
+                break;
+            case 'number':
+                setNumber(value);
+                break;
+            default:
+                break;
+        }
+    }
 
-    removeNonDigits(str) {
+    function removeNonDigits(str) {
         return str.replace(/\D/g, '');
     }
 
-    handleSubmit = e => {
+    const handleSubmit = e => {
         e.preventDefault();
-        const { onSubmit, people } = this.props;
 
         const nameFound = people.find(
             people =>
-                people.name.toLowerCase() === this.state.name.toLowerCase() ||
-                this.removeNonDigits(people.number) ===
-                    this.removeNonDigits(this.state.number)
+                people.name.toLowerCase() === name.toLowerCase() ||
+                removeNonDigits(people.number) ===
+                    removeNonDigits(number)
         );
 
         if (nameFound) {
             alert(
-                `${this.state.name} and phone number ${this.state.number} is already in contacts`
+                `${name} and phone number ${number} is already in contacts`
             );
             return;
         }
-        onSubmit(this.state.name, this.state.number);
-        this.setState({ name: '', number: '' });
+        onSubmit(name, number);
+        setName('');
+        setNumber('');
     };
 
-    render() {
-        return (
-            <ContactForm onSubmit={this.handleSubmit}>
-                <LabelName htmlFor="name">Name:</LabelName>
-                <NameInput
-                    type="text"
-                    name="name"
-                    value={this.state.name}
-                    onChange={this.handleChange}
-                    pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                    title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                    required
-                />
-                <LabelPhone htmlFor="number">Phone Number:</LabelPhone>
-                <NumberInput
-                    type="tel"
-                    name="number"
-                    value={this.state.number}
-                    onChange={this.handleChange}
-                    pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                    title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                    required
-                />
-                <AddContactButton type="submit">add Contact</AddContactButton>
-            </ContactForm>
-        );
-    }
-}
+    return (
+        <ContactForm onSubmit={handleSubmit}>
+            <LabelName htmlFor="name">Name:</LabelName>
+            <NameInput
+                type="text"
+                name="name"
+                value={name}
+                onChange={handleChange}
+                pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+                title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+                required
+            />
+            <LabelPhone htmlFor="number">Phone Number:</LabelPhone>
+            <NumberInput
+                type="tel"
+                name="number"
+                value={number}
+                onChange={handleChange}
+                pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+                title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+                required
+            />
+            <AddContactButton type="submit">add Contact</AddContactButton>
+        </ContactForm>
+    );
+};
 
 NameEditor.propTypes = {
     onSubmit: PropTypes.func.isRequired,
