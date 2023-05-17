@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { ContactsList, ContactItem } from './NameList.styled';
 import ContactName from '../ContactName/ContactName';
 
-const NameList = ({ contacts, deleteName }) => {
+const NameList = ({ contacts, deleteName, updateContact }) => {
     return (
         <ContactsList>
             {contacts.map(({ id, name, number }) => (
@@ -12,6 +12,7 @@ const NameList = ({ contacts, deleteName }) => {
                         name={name}
                         number={number}
                         deleteName={deleteName}
+                        updateContact={updateContact}
                     />
                 </ContactItem>
             ))}

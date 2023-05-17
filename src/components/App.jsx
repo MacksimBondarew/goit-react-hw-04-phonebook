@@ -9,6 +9,15 @@ const App = () => {
     const [contacts, setContacts] = useState([]);
     const [filter, setFilter] = useState('');
 
+    const handleEditContact = (updatedContact) => {
+        setContacts(prevContacts => prevContacts.map(contact => {
+            if (contact.id === updatedContact.id) {
+                return updatedContact;
+            };
+            return contact;
+        }))
+    };
+
     const addName = (name, number) => {
         const contact = {
             id: nanoid(),
@@ -29,7 +38,7 @@ const App = () => {
     const deleteName = nameId => {
         setContacts(
             prevContacts =>
-                (prevContacts = contacts.filter(name => name.id !== nameId))
+                prevContacts.filter(name => name.id !== nameId)
         );
     };
     const changeFilter = e => {
@@ -55,7 +64,7 @@ const App = () => {
 
             <TitleContacts>Contacts</TitleContacts>
             <FilterName value={filter} onChange={changeFilter} />
-            <NameList contacts={getVisibleName()} deleteName={deleteName} />
+            <NameList contacts={getVisibleName()} deleteName={deleteName} updateContact={handleEditContact} />
         </PhoneBook>
     );
 };
